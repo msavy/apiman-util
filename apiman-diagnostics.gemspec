@@ -8,10 +8,10 @@ Gem::Specification.new do |spec|
   spec.version       = Apiman::Diagnostics::VERSION
   spec.authors       = ["Marc Savy"]
   spec.email         = ["marc@rhymewithgravy.com"]
+  spec.license       = "Apache-2.0"
 
-  spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = %q{Some helpful commands to run against apiman's manager API, principally for debugging. Most commands allow you to paste a UI URL}
+  spec.homepage      = "http://www.apiman.io"
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
   # delete this section to allow pushing this gem to any host.

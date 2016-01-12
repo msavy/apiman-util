@@ -1,4 +1,3 @@
-require 'pry'
 require 'rest-client'
 require 'uri'
 require 'json'
@@ -13,7 +12,8 @@ module Apiman::Diagnostics
         #{File.basename($0)} policy [options]
       Options
         END
-        opt :config, 'Print policy config with given URL', type: :string
+        opt :info, 'Print full policy data with given URL', type: :string
+        opt :config, 'Print just policy user config with given URL', type: :string
       end
 
       def initialize(opts)
@@ -26,19 +26,9 @@ module Apiman::Diagnostics
       private
 
       def parse()
-        #require 'pry'
-        #pry
-
-        if @opts.subcommand_options[:config_given]
-          print_config(URI(@opts.subcommand_options[:config]))
+        if @opts.subcommand_options[:config_given] || @opts.subcommand_options[:info_given]
+          print_config(URI(@opts.subcommand_options[:config] || @opts.subcommand_options[:info]))
         end
-
-        # case @opts.subcommand_options
-        # when @opts.subcommand_options[:config_given] == true then
-        #   print_config(URI.new(@opts.subcommand_options[:config]))
-        # else
-        #   puts "??"
-        # end
       end
       #"http://localhost:8080/apimanui/api-manager/orgs/testorg/apis/testapi/1.0/policies/".split("api-manager")[1]
       def print_config(url)
@@ -68,7 +58,13 @@ module Apiman::Diagnostics
         ]
 
         constructed_url = "#{url.host}:#{url.port}/#{api_query_path.join("/")}"
-        puts JSON.pretty_generate(JSON.parse(http_get(constructed_url)))
+        json = JSON.parse(http_get(constructed_url))
+
+        if @opts.subcommand_options[:config_given]
+          json = JSON.parse(json["configuration"])
+        end
+
+        puts JSON.pretty_generate(json)
       end
 
       def http_get(url)
