@@ -1,0 +1,79 @@
+= Apiman::Diagnostics
+
+== Dumping policy configuration
+
+The `policy` subcommand provides a couple of functions relating to policy config. 
+
+WARNING: Remember that there may be sensitive information in the response which you want to hide before sharing.
+
+```shellsession
+$ ./bin/apiman-diagnostics -u 'admin' -p 'admin123!' policy --help
+      Usage
+        apiman-diagnostics policy [options]
+      Options
+  -i, --info=<s>      Print full policy data with given URL
+  -c, --config=<s>    Print just policy user config with given URL
+  -h, --help          Show this message
+```
+
+So, to dump full information (`-i`):
+
+```shellsession
+$ ./bin/apiman-diagnostics -u 'admin' -p 'admin123!' policy \
+-i http://localhost:8080/apimanui/api-manager/orgs/test/apis/test/1.0/policies/1461507328255113
+```
+
+```json
+{
+  "id": 1461507328255113,
+  "type": "Api",
+  "organizationId": "test",
+  "entityId": "test",
+  "entityVersion": "1.0",
+  "name": "BASIC Authentication Policy",
+  "description": "Access to the API is protected by BASIC Authentication through the 'qe' authentication realm.  ",
+  "configuration": "{\"realm\":\"qe\",\"staticIdentity\":{\"identities\":[{\"username\":\"a\",\"password\":\"a\"}]}}",
+  "createdBy": "admin",
+  "createdOn": 1461507328244,
+  "modifiedBy": "admin",
+  "modifiedOn": 1461507328244,
+  "definition": {
+    "id": "BASICAuthenticationPolicy",
+    "policyImpl": "class:io.apiman.gateway.engine.policies.BasicAuthenticationPolicy",
+    "name": "BASIC Authentication Policy",
+    "description": "Enables HTTP BASIC Authentication on an API.  Some configuration required.",
+    "icon": "lock",
+    "templates": [
+      {
+        "language": null,
+        "template": "Access to the API is protected by BASIC Authentication through the '${realm}' authentication realm.  @if{forwardIdentityHttpHeader != null}Successfully authenticated requests will forward the authenticated identity to the back end API via the '${forwardIdentityHttpHeader}' custom HTTP header.@end{}"
+      }
+    ],
+    "pluginId": null,
+    "formType": "Default",
+    "form": null,
+    "deleted": false
+  },
+  "orderIndex": 1
+}
+```
+
+Or just config (`-c`):
+
+```
+$ ./bin/apiman-diagnostics -u 'admin' -p 'admin123!' policy \
+-c http://localhost:8080/apimanui/api-manager/orgs/test/apis/test/1.0/policies/1461507328255113
+```
+```json
+{
+  "realm": "qe",
+  "staticIdentity": {
+    "identities": [
+      {
+        "username": "a",
+        "password": "a"
+      }
+    ]
+  }
+}
+```
